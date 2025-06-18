@@ -67,9 +67,33 @@
 
     form.addEventListener('submit', (e) => {
       e.preventDefault();
-      // Qui andrà il codice per inviare i dati al backend o Google Sheets
-      responseMessage.textContent = "Prenotazione ricevuta! Ti contatteremo a breve.";
-      form.reset();
+
+      const formData = {
+        fullname: form.fullname.value,
+        company: form.company.value,
+        date: form.date.value,
+        time: form.time.value,
+        goods: form.goods.value,
+        notes: form.notes.value,
+      };
+
+      fetch('https://script.google.com/macros/s/AKfycbw_dUu4JSPla03V2qHvrAuIZI7-DaM-EzONFdmjmoLfCJvs38RdBwf3fMSuVQq7I8ok/exec', {
+        method: 'POST',
+        body: JSON.stringify(formData),
+        headers: { 'Content-Type': 'application/json' }
+      })
+      .then(response => response.json())
+      .then(data => {
+        if(data.result === "success") {
+          responseMessage.textContent = "Prenotazione ricevuta! Grazie.";
+          form.reset();
+        } else {
+          responseMessage.textContent = "Errore durante la prenotazione.";
+        }
+      })
+      .catch(() => {
+        responseMessage.textContent = "Errore di connessione.";
+      });
     });
   </script>
 </body>
