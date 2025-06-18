@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Prenotazione Scarico Merce</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+    label {
+      display: block;
+      margin: 10px 0 5px;
+    }
+    input, textarea, button {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 15px;
+      box-sizing: border-box;
+    }
+    button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    #response-message {
+      font-weight: bold;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Prenotazione Scarico Merce</h1>
+  <form id="booking-form">
+    <label>Nome e Cognome:
+      <input type="text" name="fullname" required />
+    </label>
+    <label>Azienda:
+      <input type="text" name="company" required />
+    </label>
+    <label>Data:
+      <input type="date" name="date" required />
+    </label>
+    <label>Orario:
+      <input type="time" name="time" required />
+    </label>
+    <label>Tipo merce:
+      <input type="text" name="goods" required />
+    </label>
+    <label>Note:
+      <textarea name="notes"></textarea>
+    </label>
+    <button type="submit">Prenota</button>
+  </form>
+  <div id="response-message"></div>
+
+  <script>
+    const form = document.getElementById('booking-form');
+    const responseMessage = document.getElementById('response-message');
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const formData = {
+        fullname: form.fullname.value,
+        company: form.company.value,
+        date: form.date.value,
+        time: form.time.value,
+        goods: form.goods.value,
+        notes: form.notes.value,
+      };
+
+      fetch('https://script.google.com/macros/s/AKfycbw_dUu4JSPla03V2qHvrAuIZI7-DaM-EzONFdmjmoLfCJvs38RdBwf3fMSuVQq7I8ok/exec', {
+        method: 'POST',
+        body: JSON.stringify(formData),
+        headers: { 'Content-Type': 'application/json' }
+      })
+      .then(response => response.json())
+      .then(data => {
+        if(data.result === "success") {
+          responseMessage.textContent = "Prenotazione ricevuta! Grazie.";
+          form.reset();
+        } else {
+          responseMessage.textContent = "Errore durante la prenotazione.";
+        }
+      })
+      .catch(() => {
+        responseMessage.textContent = "Errore di connessione.";
+      });
+    });
+  </script>
+</body>
+</html>
